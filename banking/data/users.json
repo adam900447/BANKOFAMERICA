@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Monica",
+    "email": "monica@bankofamerica.com",
+    "password": "bf98dad23ab21ddb1fac7d35f9610c62f2b77b46d1f0eb682b440a0f7a2929cf",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": 1778711307255,
+    "name": "adam oriyomi jimoh",
+    "email": "jimohoriyomi700@gmail.com",
+    "password": "8bd7fc570dd3fd5e48991d6626d43c4c2f7a250aaeba5153798ec818156e43fa",
+    "createdAt": "2026-05-13T22:28:27.263Z"
+  },
+  {
+    "id": 1778711377412,
+    "name": "adam oriyomi jimoh",
+    "email": "jimohoriyomi70@gmail.com",
+    "password": "8bd7fc570dd3fd5e48991d6626d43c4c2f7a250aaeba5153798ec818156e43fa",
+    "createdAt": "2026-05-13T22:29:37.412Z"
+  }
+]
