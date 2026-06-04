@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bank of America — Transaction History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8CC7A;
+      --dark: #080B10;
+      --dark-2: #0E1219;
+      --dark-3: #151B25;
+      --text-primary: #F0EDE8;
+      --text-secondary: #8A8F9A;
+      --border-dim: rgba(255,255,255,0.06);
+      --glass: rgba(255, 255, 255, 0.02);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* --- Background --- */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: var(--dark) url('back1.png') center/cover no-repeat;
+      background-blend-mode: overlay;
+    }
+
+    /* --- Sidebar --- */
+    aside {
+      width: 280px;
+      background: var(--dark-2);
+      border-right: 1px solid var(--border-dim);
+      display: flex;
+      flex-direction: column;
+      padding: 2.5rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 3rem;
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-name span { color: var(--gold); }
+
+    nav ul { list-style: none; }
+    nav li { margin-bottom: 0.5rem; }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.8rem 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--glass);
+      color: var(--gold);
+    }
+
+    /* --- Main Content --- */
+    main {
+      margin-left: 280px;
+      flex: 1;
+      padding: 3rem;
+      max-width: 1200px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .welcome h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 400;
+    }
+
+    .welcome p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--dark-2);
+      border: 1px solid var(--border-dim);
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .transaction-item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--dark-3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tx-info h4 { font-size: 14px; font-weight: 500; }
+    .tx-info p { font-size: 12px; color: var(--text-secondary); }
+
+    .tx-amount { font-family: 'DM Mono', monospace; font-size: 14px; }
+    .tx-amount.neg { color: #F08080; }
+    .tx-amount.pos { color: var(--gold); }
+
+    .action-btn {
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:hover { opacity: 0.9; }
+
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <aside>
+    <div class="brand">
+      <span class="brand-name">Bank of <span>America</span></span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" class="active">Transaction History</a></li>
+        <li><a href="#" onclick="alert('This credit card operation is not allowed.');">Accounts</a></li>
+        <li><a href="#" onclick="alert('This credit card operation is not allowed.');">Investments</a></li>
+        <li><a href="#" onclick="alert('This credit card operation is not allowed.');">Transfers</a></li>
+        <li><a href="#" onclick="alert('This credit card operation is not allowed.');">Security</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main>
+    <header>
+      <div class="welcome">
+        <p id="date-display"></p>
+        <h1>Transaction History</h1>
+        <p>Complete record of all account activity</p>
+      </div>
+      <button class="action-btn" onclick="window.history.back()">← Back to Dashboard</button>
+    </header>
+
+    <div class="card">
+      <div class="section-title">All Deposits</div>
+      <div class="transaction-list">
+        <div class="transaction-item">
+          <div class="tx-icon">💰</div>
+          <div class="tx-info">
+            <h4>Interest Payment</h4>
+            <p>Tax-Advantaged Reserve — Jan 2024</p>
+          </div>
+          <div class="tx-amount pos">+$17,500.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">📈</div>
+          <div class="tx-info">
+            <h4>Dividend Credit</h4>
+            <p>Vanguard S&P 500 — Nov 2025</p>
+          </div>
+          <div class="tx-amount pos">+$3,250.40</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💼</div>
+          <div class="tx-info">
+            <h4>Capital Gains</h4>
+            <p>Private Equity Distribution — Oct 2025</p>
+          </div>
+          <div class="tx-amount pos">+$45,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏦</div>
+          <div class="tx-info">
+            <h4>Wire Deposit</h4>
+            <p>From Swiss Bank Account — Sep 2025</p>
+          </div>
+          <div class="tx-amount pos">+$28,750.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🎁</div>
+          <div class="tx-info">
+            <h4>Bonus Credit</h4>
+            <p>Loyalty Program Reward — Aug 2025</p>
+          </div>
+          <div class="tx-amount pos">+$5,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏡</div>
+          <div class="tx-info">
+            <h4>Rental Income</h4>
+            <p>Beverly Hills Property — Jul 2025</p>
+          </div>
+          <div class="tx-amount pos">+$12,800.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🛫</div>
+          <div class="tx-info">
+            <h4>Travel Reimbursement</h4>
+            <p>Business Trip Refund — Jun 2025</p>
+          </div>
+          <div class="tx-amount pos">+$8,420.50</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💎</div>
+          <div class="tx-info">
+            <h4>Asset Sale Proceeds</h4>
+            <p>Antique Collection — May 2025</p>
+          </div>
+          <div class="tx-amount pos">+$36,800.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏨</div>
+          <div class="tx-info">
+            <h4>Investment Return</h4>
+            <p>Cryptocurrency Portfolio — Apr 2025</p>
+          </div>
+          <div class="tx-amount pos">+$22,500.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">📊</div>
+          <div class="tx-info">
+            <h4>Stock Dividend</h4>
+            <p>Tech Sector ETF — Mar 2025</p>
+          </div>
+          <div class="tx-amount pos">+$7,650.75</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💰</div>
+          <div class="tx-info">
+            <h4>Interest Accrual</h4>
+            <p>High-Yield Savings — Feb 2025</p>
+          </div>
+          <div class="tx-amount pos">+$4,200.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🎯</div>
+          <div class="tx-info">
+            <h4>Performance Bonus</h4>
+            <p>Portfolio Management — Jan 2025</p>
+          </div>
+          <div class="tx-amount pos">+$15,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏦</div>
+          <div class="tx-info">
+            <h4>Direct Deposit</h4>
+            <p>Salary Payment — Dec 2024</p>
+          </div>
+          <div class="tx-amount pos">+$50,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">📈</div>
+          <div class="tx-info">
+            <h4>Dividend Payment</h4>
+            <p>Real Estate Investment Trust — Nov 2024</p>
+          </div>
+          <div class="tx-amount pos">+$9,875.30</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💼</div>
+          <div class="tx-info">
+            <h4>Capital Distribution</h4>
+            <p>Venture Capital Fund II — Oct 2024</p>
+          </div>
+          <div class="tx-amount pos">+$75,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏡</div>
+          <div class="tx-info">
+            <h4>Property Sale</h4>
+            <p>Miami Condo — Sep 2024</p>
+          </div>
+          <div class="tx-amount pos">+$200,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🎁</div>
+          <div class="tx-info">
+            <h4>Gift Deposit</h4>
+            <p>Family Transfer — Aug 2024</p>
+          </div>
+          <div class="tx-amount pos">+$25,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🛫</div>
+          <div class="tx-info">
+            <h4>Expense Refund</h4>
+            <p>Overseas Travel — Jul 2024</p>
+          </div>
+          <div class="tx-amount pos">+$6,750.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💎</div>
+          <div class="tx-info">
+            <h4>Jewelry Appraisal Credit</h4>
+            <p>Insurance Settlement — Jun 2024</p>
+          </div>
+          <div class="tx-amount pos">+$18,900.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏨</div>
+          <div class="tx-info">
+            <h4>Hotel Rebate</h4>
+            <p>Loyalty Program — May 2024</p>
+          </div>
+          <div class="tx-amount pos">+$3,200.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">📊</div>
+          <div class="tx-info">
+            <h4>Mutual Fund Dividend</h4>
+            <p>Balanced Portfolio — Apr 2024</p>
+          </div>
+          <div class="tx-amount pos">+$11,450.60</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💰</div>
+          <div class="tx-info">
+            <h4>Savings Interest</h4>
+            <p>Certificate of Deposit — Mar 2024</p>
+          </div>
+          <div class="tx-amount pos">+$2,800.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🎯</div>
+          <div class="tx-info">
+            <h4>Commission Payment</h4>
+            <p>Investment Advisory — Feb 2024</p>
+          </div>
+          <div class="tx-amount pos">+$8,500.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏦</div>
+          <div class="tx-info">
+            <h4>Year-End Bonus</h4>
+            <p>Employer Deposit — Jan 2024</p>
+          </div>
+          <div class="tx-amount pos">+$30,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">📈</div>
+          <div class="tx-info">
+            <h4>Quarterly Dividend</h4>
+            <p>Preferred Stock — Dec 2023</p>
+          </div>
+          <div class="tx-amount pos">+$6,725.25</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">💼</div>
+          <div class="tx-info">
+            <h4>Partnership Distribution</h4>
+            <p>Business Venture — Nov 2023</p>
+          </div>
+          <div class="tx-amount pos">+$40,000.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🏡</div>
+          <div class="tx-info">
+            <h4>Rental Deposit</h4>
+            <p>Commercial Property — Oct 2023</p>
+          </div>
+          <div class="tx-amount pos">+$15,600.00</div>
+        </div>
+        <div class="transaction-item">
+          <div class="tx-icon">🎁</div>
+          <div class="tx-info">
+            <h4>Inheritance Deposit</h4>
+            <p>Trust Fund Transfer — Sep 2023</p>
+          </div>
+          <div class="tx-amount pos">+$100,000.00</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Simple date display
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('date-display').textContent = new Date().toLocaleDateString(undefined, options);
+  </script>
+</body>
+</html>
