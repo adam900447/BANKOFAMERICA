@@ -4,7 +4,11 @@ const path = require('path');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://brooks42:Vika42697@cluster0.dcatazd.mongodb.net/banking?appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URI environment variable is not set');
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +32,6 @@ const userSchema = new mongoose.Schema({
   token:     { type: String, default: null },
   createdAt: { type: Date, default: Date.now }
 });
-
 const User = mongoose.model('User', userSchema);
 
 // ── Transaction Schema ──
@@ -39,7 +42,6 @@ const transactionSchema = new mongoose.Schema({
   description: { type: String },
   date:        { type: Date, default: Date.now }
 });
-
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
 // ── Helpers ──
@@ -53,17 +55,14 @@ app.post('/api/auth/signup', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password)
       return res.status(400).json({ success: false, message: 'Name, email, and password are required.' });
-
     const exists = await User.findOne({ email: email.toLowerCase() });
     if (exists)
       return res.status(409).json({ success: false, message: 'Email already registered.' });
-
     const user = await User.create({
       name,
       email: email.toLowerCase(),
       password: hashPassword(password)
     });
-
     return res.json({ success: true, message: 'Account created successfully.', user: { name: user.name, email: user.email } });
   } catch (err) {
     console.error('Signup error:', err);
@@ -76,15 +75,12 @@ app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password)
       return res.status(400).json({ success: false, message: 'Email and password are required.' });
-
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user || user.password !== hashPassword(password))
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
-
     const token = crypto.randomBytes(32).toString('hex');
     user.token = token;
     await user.save();
-
     return res.json({
       success: true,
       token,
